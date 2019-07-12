@@ -629,7 +629,8 @@ NSArray *BucketizeTestCasesByTestClass(NSArray *testCases, NSUInteger bucketSize
         if (testable.skipped || [omitList isKindOfClass:[NSNull class]]) {
           testable.skipped = true;
         } else {
-          testable.skippedTests = [testable.skippedTests arrayByAddingObjectsFromArray:omitList];
+          NSArray *skippedTests = testable.skippedTests ?: @[];
+          testable.skippedTests = [skippedTests arrayByAddingObjectsFromArray:omitList];
         }
       }
       if (!testable.skipped) {
