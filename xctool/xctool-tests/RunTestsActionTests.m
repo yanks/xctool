@@ -167,7 +167,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
 
     NSDictionary *output = [TestUtil runWithFakeStreams:tool];
 
-    assertThatInt(tool.exitStatus, equalToInt(1));
+    assertThatInteger(tool.exitStatus, equalToInt(1));
     assertThat(output[@"stdout"],
                containsString(@"Unable to read build settings for target 'TestProject-LibraryTests'."));
   }];
@@ -218,7 +218,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
                        @"-scheme", @"TestProject-Library",
                        @"-configuration", @"Debug",
                        @"-sdk", @"iphonesimulator",
-                       @"-destination", @"arch=i386,name=iPhone 5s",
+                       @"-destination", DefaultDeviceDestination(),
                        @"run-tests",
                        @"-reporter", @"plain",
                        ];
@@ -233,7 +233,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
                equalTo(@[
                        @"-configuration", @"Debug",
                        @"-sdk", @"iphonesimulator6.1",
-                       @"-destination", @"arch=i386,name=iPhone 5s",
+                       @"-destination", DefaultDeviceDestination(),
                        @"-destination-timeout", @"10",
                        @"PLATFORM_NAME=iphonesimulator",
                        @"-project", TEST_DATA @"TestProject-Library/TestProject-Library.xcodeproj",
@@ -263,7 +263,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
       assertThat([launchedTasks[1] environment][@"SIMCTL_CHILD_XCTestConfigurationFilePath"], notNilValue());
     }
 
-    assertThatInt(tool.exitStatus, equalToInt(1));
+    assertThatInteger(tool.exitStatus, equalToInt(1));
   }];
 }
 
@@ -339,7 +339,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
     assertThat([launchedTasks[1] environment][@"SIMCTL_CHILD_XCTestConfigurationFilePath"], notNilValue());
     assertThat([launchedTasks[1] environment][@"SIMCTL_CHILD_OTEST_SHIM_STDOUT_FILE"], notNilValue());
 
-    assertThatInt(tool.exitStatus, equalToInt(XCToolActionFailed));
+    assertThatInteger(tool.exitStatus, equalToInt(XCToolActionFailed));
   }];
 }
 
@@ -376,7 +376,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
       @"-scheme", scheme,
       @"-configuration", @"Debug",
       @"-sdk", @"iphonesimulator",
-      @"-destination", @"arch=i386,name=iPhone 5",
+      @"-destination", DefaultDeviceDestination(),
       @"run-tests",
       @"-reporter", @"plain",
     ];
@@ -390,7 +390,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
     assertThat([launchedTasks[0] arguments], equalTo(@[
       @"-configuration", @"Debug",
       @"-sdk", @"iphonesimulator6.1",
-      @"-destination", @"arch=i386,name=iPhone 5",
+      @"-destination", DefaultDeviceDestination(),
       @"-destination-timeout", @"10",
       @"PLATFORM_NAME=iphonesimulator",
       @"-project", projectPath,
@@ -416,7 +416,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
         @"/Users/nekto/Library/Developer/Xcode/DerivedData/TestProject-WithNonExistingTargetInScheme-firogdnnjipxwgadvqtehztcfdio/Build/Products/Release-iphonesimulator/TestProject-WithNonExistingTargetInSchemeTests.xctest",
       ]));
     }
-    assertThatInt(tool.exitStatus, equalToInt(XCToolAllActionsSucceeded));
+    assertThatInteger(tool.exitStatus, equalToInt(XCToolAllActionsSucceeded));
   }];
 }
 
@@ -452,7 +452,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
       @"-scheme", scheme,
       @"-configuration", @"Debug",
       @"-sdk", @"iphonesimulator",
-      @"-destination", @"arch=i386,name=iPhone 5s",
+      @"-destination", DefaultDeviceDestination(),
       @"run-tests",
       @"listTestsOnly",
       @"-reporter", @"json-stream"
@@ -478,7 +478,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
                      ];
 
   NSDictionary *output = [TestUtil runWithFakeStreams:tool];
-  assertThatInt(tool.exitStatus, equalToInt(0));
+  assertThatInteger(tool.exitStatus, equalToInt(0));
   assertThat(output[@"stdout"], containsString(@"-[TestProject_Library_XCTest_CustomTests customTest]"));
   assertThat(output[@"stdout"], containsString(@"-[TestProject_Library_XCTest_CustomTests customTestWithInteger:]"));
   assertThat(output[@"stdout"], containsString(@"SUCCEEDED"));
@@ -522,7 +522,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
       @"-scheme", scheme,
       @"-configuration", @"Debug",
       @"-sdk", @"iphonesimulator",
-      @"-destination", @"arch=i386,name=iPhone 5s",
+      @"-destination", DefaultDeviceDestination(),
       @"run-tests", @"-test-sdk", @"iphonesimulator5.0",
       @"-reporter", @"plain",
     ];
@@ -537,7 +537,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
     assertThat([launchedTasks[0] arguments], equalTo(@[
       @"-configuration", @"Debug",
       @"-sdk", @"iphonesimulator5.0",
-      @"-destination", @"arch=i386,name=iPhone 5s",
+      @"-destination", DefaultDeviceDestination(),
       @"-destination-timeout", @"10",
       @"PLATFORM_NAME=iphonesimulator",
       @"-project", projectPath,
@@ -565,7 +565,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
     if (ToolchainIsXcode7OrBetter()) {
       assertThat([launchedTasks[1] environment][@"SIMCTL_CHILD_XCTestConfigurationFilePath"], notNilValue());
     }
-    assertThatInt(tool.exitStatus, equalToInt(XCToolActionFailed));
+    assertThatInteger(tool.exitStatus, equalToInt(XCToolActionFailed));
   }];
 }
 
@@ -608,7 +608,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
         @"-scheme", scheme,
         @"-configuration", @"Debug",
         @"-sdk", @"iphonesimulator",
-        @"-destination", @"arch=i386,name=iPhone 5s",
+        @"-destination", DefaultDeviceDestination(),
         @"run-tests"
       ] mutableCopy];
       for (NSString *value in values) {
@@ -745,6 +745,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
 
     tool.arguments = @[@"-project", projectPath,
                        @"-scheme", @"TestProject-Library-XCTest-iOS",
+                       @"-destination", DefaultDeviceDestination(),
                        @"run-tests",
                        @"-reporter", @"plain",
                        ];
@@ -925,7 +926,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
                        @"-scheme", @"TestProject-Library",
                        @"-sdk", @"iphonesimulator",
                        @"-arch", @"i386",
-                       @"-destination", @"arch=i386,name=iPhone 5s",
+                       @"-destination", DefaultDeviceDestination(),
                        @"run-tests",
                        @"-reporter", @"plain",
                        ];
@@ -942,7 +943,7 @@ static BOOL areEqualJsonOutputsIgnoringKeys(NSString *output1, NSString *output2
                        @"iphonesimulator6.1",
                        @"-arch",
                        @"i386",
-                       @"-destination", @"arch=i386,name=iPhone 5s",
+                       @"-destination", DefaultDeviceDestination(),
                        @"-destination-timeout", @"10",
                        @"PLATFORM_NAME=iphonesimulator",
                        @"-project",
