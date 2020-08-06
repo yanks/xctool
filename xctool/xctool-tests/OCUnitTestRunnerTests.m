@@ -35,6 +35,7 @@
 #import "XcodeBuildSettings.h"
 #import "XCTestConfiguration.h"
 #import "XCTestConfigurationUnarchiver.h"
+#import "Testable.h"
 
 @interface OCUnitTestRunner ()
 @property (nonatomic, copy) SimulatorInfo *simulatorInfo;
@@ -47,9 +48,11 @@ static id TestRunnerWithTestListsAndProcessEnv(Class cls, NSDictionary *settings
 
   EventBuffer *eventBuffer = [[EventBuffer alloc] init];
 
+  Testable *testable = [[Testable alloc] init];
   SimulatorInfo *simulatorInfo = [SimulatorInfo new];
   [simulatorInfo setDeviceName:kDefaultDeviceName];
   return [[cls alloc] initWithBuildSettings:settings
+                                   testable:testable
                               simulatorInfo:simulatorInfo
                            focusedTestCases:focusedTestCases
                                allTestCases:allTestCases
