@@ -26,6 +26,9 @@
 
 static NSString * const kEnvVarPassThroughPrefix = @"XCTOOL_TEST_ENV_";
 
+// key for specifying folder of profile
+static NSString * const kEnvVarProfileDirectory = @"XCTOOL_PROFILE_DIRECTORY";
+
 @interface OCUnitTestRunner ()
 @property (nonatomic, copy) NSDictionary *buildSettings;
 @property (nonatomic, copy) SimulatorInfo *simulatorInfo;
@@ -138,6 +141,7 @@ static NSString * const kEnvVarPassThroughPrefix = @"XCTOOL_TEST_ENV_";
 }
 
 - (instancetype)initWithBuildSettings:(NSDictionary *)buildSettings
+                             testable:(Testable *)testable
                         simulatorInfo:(SimulatorInfo *)simulatorInfo
                      focusedTestCases:(NSArray *)focusedTestCases
                          allTestCases:(NSArray *)allTestCases
@@ -155,6 +159,7 @@ static NSString * const kEnvVarPassThroughPrefix = @"XCTOOL_TEST_ENV_";
 {
   if (self = [super init]) {
     _buildSettings = [buildSettings copy];
+    _testable = [testable copy];
     _simulatorInfo = [simulatorInfo copy];
     _simulatorInfo.buildSettings = buildSettings;
     _focusedTestCases = [focusedTestCases copy];
@@ -403,13 +408,34 @@ static NSString * const kEnvVarPassThroughPrefix = @"XCTOOL_TEST_ENV_";
 {
   NSMutableDictionary *filteredProcessEnv = [NSMutableDictionary dictionary];
   BOOL isMacOSX = [[_simulatorInfo simulatedPlatform] isEqualToString:@"macosx"];
+
+  BOOL overrideProfileDirectory = NO;
   for (NSString *envVarName in _processEnvironment) {
     NSString *value = [_processEnvironment objectForKey:envVarName];
-    if ([envVarName hasPrefix:kEnvVarPassThroughPrefix]) {
+    if ([envVarName hasPrefix:kEnvVarProfileDirectory]) {
+      overrideProfileDirectory = YES;
+
+      NSString *target = [_testable.target lastPathComponent];
+      NSString *xctestSuffix = @".xctest";
+      if ([target hasSuffix:xctestSuffix]) {
+        target = [target substringToIndex:[target length] - [xctestSuffix length]];
+      }
+      NSString *profrawName = [NSString stringWithFormat:@"code-%@-%@",
+                               target,
+                               @"%p-%m.profraw"];
+      NSString *profrawValue = [NSString pathWithComponents:@[value, profrawName]];
+      [filteredProcessEnv setObject:profrawValue
+                             forKey:@"LLVM_PROFILE_FILE"];
+    } else if ([envVarName hasPrefix:kEnvVarPassThroughPrefix]) {
+      NSString *filteredName = [envVarName substringFromIndex:[kEnvVarPassThroughPrefix length]];
+      if ([filteredName isEqualToString:@"LLVM_PROFILE_FILE"]) {
+        NSCAssert(!overrideProfileDirectory,
+                  @"Already overriding directory, should not be also overriding file name directly");
+      }
       // Pass through any environment variables with a special prefix, after
       // stripping the prefix from the name.
       [filteredProcessEnv setObject:value
-                             forKey:[envVarName substringFromIndex:[kEnvVarPassThroughPrefix length]]];
+                             forKey:filteredName];
     } else if (isMacOSX) {
       // OS X tests get the entire calling environment.
       [filteredProcessEnv setObject:value forKey:envVarName];

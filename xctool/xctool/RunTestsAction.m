@@ -767,6 +767,7 @@ typedef BOOL (^TestableBlock)(NSArray *reporters);
 {
   return [^(NSArray *reporters) {
     OCUnitTestRunner *testRunner = [[testRunnerClass alloc] initWithBuildSettings:testableExecutionInfo.buildSettings
+                                                                         testable:testable
                                                                     simulatorInfo:_simulatorInfo
                                                                  focusedTestCases:focusedTestCases
                                                                      allTestCases:allTestCases

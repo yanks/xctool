@@ -26,6 +26,7 @@
 #import "TestUtil.h"
 #import "XCToolUtil.h"
 #import "XcodeBuildSettings.h"
+#import "Testable.h"
 
 @interface OTestShimTests : XCTestCase
 @end
@@ -110,10 +111,13 @@ static NSTask *OtestShimTask(NSString *platformName,
   targetSettings[Xcode_TARGET_BUILD_DIR] = [bundlePath stringByDeletingLastPathComponent];
   targetSettings[Xcode_FULL_PRODUCT_NAME] = [bundlePath lastPathComponent];
 
+  Testable *testable = [[Testable alloc] init];
+
   // set up an OCUnitIOSLogicTestRunner
   SimulatorInfo *simulatorInfo = [SimulatorInfo new];
   [simulatorInfo setDeviceName:kDefaultDeviceName];
   OCUnitIOSLogicTestRunner *runner = [[testRunnerClass alloc] initWithBuildSettings:targetSettings
+                                                                           testable:testable
                                                                       simulatorInfo:simulatorInfo
                                                                    focusedTestCases:focusedTests
                                                                        allTestCases:allTests

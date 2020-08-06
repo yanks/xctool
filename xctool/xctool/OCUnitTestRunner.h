@@ -19,6 +19,7 @@
 #import "SimulatorInfo.h"
 #import "TestRunState.h"
 #import "TestingFramework.h"
+#import "Testable.h"
 
 @interface OCUnitTestRunner : NSObject {
 @protected
@@ -38,6 +39,7 @@
   NSInteger _testTimeout;
   NSArray *_reporters;
   NSDictionary *_framework;
+  Testable *_testable;
 }
 
 @property (nonatomic, copy, readonly) NSArray *reporters;
@@ -60,6 +62,7 @@
                        error:(NSString **)error;
 
 - (instancetype)initWithBuildSettings:(NSDictionary *)buildSettings
+                             testable:(Testable *)testable
                         simulatorInfo:(SimulatorInfo *)simulatorInfo
                      focusedTestCases:(NSArray *)focusedTestCases
                          allTestCases:(NSArray *)allTestCases
