@@ -360,10 +360,17 @@ static NSString * const kEnvVarProfileDirectory = @"XCTOOL_PROFILE_DIRECTORY";
   XCTestConfiguration *configuration = [XCTestConfigurationClass new];
   configuration.testBundleURL = [NSURL fileURLWithPath:_simulatorInfo.productBundlePath];
   configuration.productModuleName = _buildSettings[Xcode_PRODUCT_MODULE_NAME];
-  configuration.testsToSkip = [NSSet setWithArray:testCasesToSkip];
   configuration.targetApplicationPath = testHostAppPath;
   configuration.targetApplicationBundleID = testHostBundleID;
   configuration.reportActivities = YES;
+  
+  Class XCTestIdentifierSetClass = NSClassFromString(@"XCTTestIdentifierSet");
+  if (XCTestIdentifierSetClass) {
+    id identifierSet = [[XCTestIdentifierSetClass alloc] initWithSet:[NSSet setWithArray:testCasesToSkip]];
+    configuration.testsToSkip = identifierSet;
+  } else {
+    configuration.testsToSkip = [NSSet setWithArray:testCasesToSkip];
+  }
 
   // UI tests require special treatment
   if ([_buildSettings[Xcode_USES_XCTRUNNER] boolValue]) {

@@ -1071,11 +1071,7 @@ typedef BOOL (^TestableBlock)(NSArray *reporters);
 
   // Restore `_parallelize` value.
   _parallelize = originalParallelizeValue;
-
-  dispatch_release(group);
-  dispatch_release(queueLimiter);
-  dispatch_release(q);
-
+  
   [xcodeSubjectInfo.actionScripts postTestWithOptions:options];
 
   return succeeded;

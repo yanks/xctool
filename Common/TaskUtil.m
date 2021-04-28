@@ -149,7 +149,8 @@ static NSArray *LinesFromDispatchData(dispatch_data_t data, BOOL omitNewlineChar
     *convertedSize = processedSize;
   }
 
-  dispatch_release(contig);
+  contig = nil;
+  
   return lines;
 }
 
@@ -211,11 +212,9 @@ void ReadOutputsAndFeedOuputLinesToBlockOnQueue(
       }
       if (!info->done && data != NULL) {
         if (info->data == NULL) {
-          dispatch_retain(data);
           info->data = data;
         } else {
           dispatch_data_t combined = dispatch_data_create_concat(info->data, data);
-          dispatch_release(info->data);
           info->data = combined;
         }
       }
@@ -233,12 +232,10 @@ void ReadOutputsAndFeedOuputLinesToBlockOnQueue(
             const char *lastCharPtr;
             dispatch_data_t ch = dispatch_data_create_map(subdata, (const void **)&lastCharPtr, NULL);
             info->trailingNewline = (*lastCharPtr == '\n');
-            dispatch_release(ch);
-            dispatch_release(subdata);
+            ch = nil;
           }
 
           dispatch_data_t remaining = dispatch_data_create_subrange(info->data, chomped, size - chomped);
-          dispatch_release(info->data);
           info->data = remaining;
         }
       }
@@ -273,16 +270,9 @@ void ReadOutputsAndFeedOuputLinesToBlockOnQueue(
       if (info->trailingNewline) {
         callOutputLineFeedBlock(info->fd, @"");
       }
-      if (info->data != NULL) {
-        dispatch_release(info->data);
-      }
       dispatch_io_close(info->io, DISPATCH_IO_STOP);
-      dispatch_release(info->io);
     });
   }
-
-  dispatch_release(ioGroup);
-  dispatch_release(ioQueue);
   free(infos);
 }
 
