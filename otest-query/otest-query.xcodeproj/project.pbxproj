@@ -491,7 +491,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}\"/../scripts/RunScripts/assert_universal.sh";
+			shellScript = "\"${PROJECT_DIR}\"/../scripts/RunScripts/assert_universal.sh\n";
 			showEnvVarsInLog = 0;
 		};
 		28AA034C18564ED000854B0E /* Verify */ = {

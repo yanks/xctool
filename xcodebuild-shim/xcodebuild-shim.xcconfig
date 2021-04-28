@@ -19,5 +19,5 @@
 #include "../Configurations/Install.xcconfig"
 XT_INSTALL_DIR = lib
 
-MACOSX_DEPLOYMENT_TARGET = 10.7
+MACOSX_DEPLOYMENT_TARGET = 10.9
 CLANG_ENABLE_OBJC_ARC = YES
