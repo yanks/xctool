@@ -237,6 +237,12 @@ NSString *IOSTestFrameworkDirectories(void);
 NSString *OSXTestFrameworkDirectories(void);
 
 /**
+ * Returns absolute paths to directories with iOS test libraries in the form of `path1:path2:path3`.
+ */
+NSString *IOSTestLibraryDirectories(void);
+
+
+/**
  * Returns common environment required to query and run iOS, OS X or TV OS tests.
  */
 NSMutableDictionary *IOSTestEnvironment(NSDictionary *buildSettings);
