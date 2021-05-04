@@ -82,8 +82,12 @@ static NSString * const kEnvVarProfileDirectory = @"XCTOOL_PROFILE_DIRECTORY";
     if (hasClassAndMethod && !matchingPrefix) {
       // "SomeClass/testMethod"
       // Use the set for a fast strict matching for this one test
+      NSString *swiftSpecifier = [specifier stringByAppendingString:@"()"];
       if ([set containsObject:specifier]) {
         [matchingSet addObject:specifier];
+        matched = YES;
+      } else if ([set containsObject:swiftSpecifier]) {
+        [matchingSet addObject:swiftSpecifier];
         matched = YES;
       }
     } else {
@@ -365,8 +369,13 @@ static NSString * const kEnvVarProfileDirectory = @"XCTOOL_PROFILE_DIRECTORY";
   configuration.reportActivities = YES;
   
   Class XCTestIdentifierSetClass = NSClassFromString(@"XCTTestIdentifierSet");
-  if (XCTestIdentifierSetClass) {
-    id identifierSet = [[XCTestIdentifierSetClass alloc] initWithSet:[NSSet setWithArray:testCasesToSkip]];
+  Class XCTestIdentifierClass = NSClassFromString(@"XCTTestIdentifier");
+  if (XCTestIdentifierSetClass && XCTestIdentifierClass) {
+    NSMutableSet *identifiers = [NSMutableSet set];
+    for (NSString *testCase in testCasesToSkip) {
+      [identifiers addObject:[[XCTTestIdentifier alloc] initWithStringRepresentation:testCase]];
+    }
+    id identifierSet = [[XCTTestIdentifierSet alloc] initWithSet:identifiers];
     configuration.testsToSkip = identifierSet;
   } else {
     configuration.testsToSkip = [NSSet setWithArray:testCasesToSkip];

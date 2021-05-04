@@ -1087,7 +1087,8 @@ typedef BOOL (^TestableBlock)(NSArray *reporters);
     for (NSString *testCase in testableExecutionInfo.testCases) {
       NSArray *components = [testCase componentsSeparatedByString:@"/"];
       NSString *className = components[0];
-      NSString *methodName = components[1];
+      // Report list w/o swift indicator
+      NSString *methodName = [components[1] stringByReplacingOccurrencesOfString:@"()" withString:@""];
       NSString *testName = [NSString stringWithFormat:@"-[%@ %@]", className, methodName];
       NSDictionary *beginTestEvent = @{kReporter_BeginTest_TestKey: testName,
                                        kReporter_BeginTest_ClassNameKey: className,

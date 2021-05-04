@@ -54,7 +54,9 @@
 
   NSAssert([parts count] == 2, @"Unable to parse input name `%@`", name);
   _className = [parts[0] copy];
-  _methodName = [parts[1] copy];
+  
+  // Remove swift indicator
+  _methodName = [parts[1] stringByReplacingOccurrencesOfString:@"()" withString:@""];
 }
 
 - (NSString *)testName

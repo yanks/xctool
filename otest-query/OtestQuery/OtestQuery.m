@@ -49,6 +49,19 @@
   return names;
 }
 
++ (NSArray *)testIdentifiersFromSuite:(id)testSuite
+{
+  NSMutableArray *identifiers = [NSMutableArray array];
+
+  for (id test in TestsFromSuite(testSuite)) {
+    id identifier = [test performSelector:@selector(_identifier)];
+    NSAssert(identifier != nil, @"Can't get identifier for test: %@", test);
+    [identifiers addObject:identifier];
+  }
+
+  return identifiers;
+}
+
 + (void)queryTestBundlePath:(NSString *)testBundlePath
 {
   NSString *outputFile = [NSProcessInfo processInfo].environment[@"OTEST_QUERY_OUTPUT_FILE"];
@@ -118,15 +131,22 @@
   id allTestsSuite = [testSuiteClass performSelector:@selector(allTests)];
   NSCAssert(allTestsSuite, @"Should have gotten a test suite from allTests");
 
-  NSArray *fullTestNames = [self testNamesFromSuite:allTestsSuite];
   NSMutableArray *testNames = [NSMutableArray array];
+  if (NSClassFromString(@"XCTTestIdentifier")) {
+    NSArray *identifiers = [self testIdentifiersFromSuite:allTestsSuite];
+    for (NSString *identifier in identifiers) {
+      [testNames addObject:[identifier performSelector:@selector(identifierString)]];
+    }
+  } else {
+    NSArray *fullTestNames = [self testNamesFromSuite:allTestsSuite];
 
-  for (NSString *fullTestName in fullTestNames) {
-    NSString *className = nil;
-    NSString *methodName = nil;
-    ParseClassAndMethodFromTestName(&className, &methodName, fullTestName);
+    for (NSString *fullTestName in fullTestNames) {
+      NSString *className = nil;
+      NSString *methodName = nil;
+      ParseClassAndMethodFromTestName(&className, &methodName, fullTestName);
 
-    [testNames addObject:[NSString stringWithFormat:@"%@/%@", className, methodName]];
+      [testNames addObject:[NSString stringWithFormat:@"%@/%@", className, methodName]];
+    }
   }
 
   [testNames sortUsingSelector:@selector(compare:)];

@@ -8,6 +8,16 @@
 
 @class XCTAggregateSuiteRunStatistics;
 
+@interface XCTTestIdentifierSet: NSObject <NSCopying, NSFastEnumeration, NSSecureCoding>
++(id)emptyTestIdentifierSet;
+-(id)initWithSet:(id)arg1;
+@end
+
+@interface XCTTestIdentifier: NSObject
+- (instancetype)initWithComponents:(id)components options:(unsigned long long)options;
+- (instancetype)initWithStringRepresentation:(NSString *)stringRepresentation;
+@end
+
 @interface XCTestConfiguration : NSObject <NSSecureCoding>
 
 @property(copy) NSString *absolutePath;
